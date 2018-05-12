@@ -1,4 +1,5 @@
 module.exports = {
+
   throwError: () => {
     throw new Error('regular function error');
   },
@@ -15,11 +16,19 @@ module.exports = {
     });
   },
 
-  promiseConsumer: (promiseFunc) => {
+  promiseConsumerReturn: (promiseFunc) => {
     return promiseFunc()
     .then((result) => result)
       .catch((err) => {
         return err;
+      });
+  },
+
+  promiseConsumerThrow: (promiseFunc) => {
+    return promiseFunc()
+    .then((result) => result)
+      .catch((err) => {
+        throw err;
       });
   },
 
@@ -36,24 +45,21 @@ module.exports = {
     const error = new Error('error in middleware');
     error.status = 401;
     next(error);
+  },
+
+  asyncAwaitError: async (data) => {
+    const error = new Error('async await error');
+    error.status = 503;
+    await Promise.reject(error);
+    return 'result';
+  },
+
+  nodeCbError: (cb) => {
+    const err = new Error('callback error');
+    err.status = 503;
+    const result = null;
+    cb(err, result);
   }
 
 }
 
-
-async function asyncAwaitHelper(data) {
-  const y = data.name.last; // uncaught error
-  throw new Error('async await error');
-};
-
-const nodeCbFn = (cb) => {
-  const err = new Error('callback error');
-  const result = null;
-  cb(err, result);
-}
-
-const middlewareFn = (req, res, next) => {
-  const error = new Error('error in middleware');
-  error.status = 401;
-  next(error);
-}

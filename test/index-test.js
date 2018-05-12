@@ -19,23 +19,24 @@ describe('error tests', () => {
 
   afterEach((done) => {
     sandbox.restore()
+    app.set('env', 'test')
     done();
   });
 
-  xit('responds with the error object in the body', (done) => {
+  it('responds with the error as empty object in the body', (done) => {
 
     chai.request(app).get('/error')
     .then((res) => {
       res.status.should.equal(500);
-      res.body.error.error.should.have.property('stack');
+      Object.keys(res.body.error.error).length.should.equal(0);
       done();
     })
     .catch(done);
   });
 
 
-  xit('logs the error to the console', (done) => {
-
+  it('logs the error to the console (when NODE_ENV !== test)', (done) => {
+    app.set('env', 'not_test');
     const consoleSpy = sinon.spy(console, 'log');
 
     chai.request(app).get('/error')
@@ -47,17 +48,17 @@ describe('error tests', () => {
     .catch(done);
   });
 
-  xit('responds with a 500', (done) => {
+  it('responds with 200, because returning does not stop route execution', (done) => {
 
     chai.request(app).get('/error/return')
     .then((res) => {
-      res.status.should.equal(500);
+      res.status.should.equal(200);
       done();
     })
     .catch(done);
   });
 
-  xit('responds with a 500', (done) => {
+  it('responds with 500 because throwing error invokes middleware error handler', (done) => {
 
     chai.request(app).get('/error/throw')
     .then((res) => {
@@ -67,7 +68,7 @@ describe('error tests', () => {
     .catch(done);
   });
 
-  xit('rejected Promise returns with a 503', (done) => {
+  it('rejected Promise returns with a 503', (done) => {
     chai.request(app).get('/error/promise')
     .then((res) => {
       res.status.should.equal(503);
@@ -77,8 +78,17 @@ describe('error tests', () => {
     .catch(done);
   });
 
-  xit('rejected Nested Promise returns with a 503', (done) => {
-    chai.request(app).get('/error/consumed-promise')
+  it('RETURNED error in nested rejected promise responds with a 200', (done) => {
+    chai.request(app).get('/error/nested-promise/return')
+    .then((res) => {
+      res.status.should.equal(200);
+      done();
+    })
+    .catch(done);
+  });
+
+  it('THROWN error in nested rejected promise responds with a 503', (done) => {
+    chai.request(app).get('/error/nested-promise/throw')
     .then((res) => {
       res.status.should.equal(503);
       res.body.error.message.should.equal('Promise Failed')
@@ -87,7 +97,7 @@ describe('error tests', () => {
     .catch(done);
   });
 
-  xit('handles expected validation error', (done) => {
+  it('handles expected error', (done) => {
     chai.request(app).get('/error/expected')
     .then((res) => {
       res.status.should.equal(400);
@@ -102,6 +112,26 @@ describe('error tests', () => {
     .then((res) => {
       res.status.should.equal(401);
       res.body.error.message.should.equal('error in middleware');
+      done();
+    })
+    .catch(done);
+  });
+
+  it('responds with 503 thrown from an async await function', (done) => {
+    chai.request(app).get('/error/async-await')
+    .then((res) => {
+      res.status.should.equal(503);
+      res.body.error.message.should.equal('async await error');
+      done();
+    })
+    .catch(done);
+  });
+
+  it('responds with 503 thrown from cb function', (done) => {
+    chai.request(app).get('/error/callback')
+    .then((res) => {
+      res.status.should.equal(503);
+      res.body.error.message.should.equal('callback error');
       done();
     })
     .catch(done);
