@@ -34,7 +34,6 @@ describe('error tests', () => {
     .catch(done);
   });
 
-
   it('logs the error to the console (when NODE_ENV !== test)', (done) => {
     app.set('env', 'not_test');
     const consoleSpy = sinon.spy(console, 'log');

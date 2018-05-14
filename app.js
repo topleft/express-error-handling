@@ -31,6 +31,7 @@ app.use(function(req, res, next) {
 app.use(function(err, req, res, next) {
   const env = app.get('env');
   if (app.get('env') !== 'test') console.log(err);
+  res.locals.error = err;
   res.status(err.status || 500);
   res.json({
     error: {
