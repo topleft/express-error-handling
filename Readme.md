@@ -74,10 +74,6 @@ console.log(e.propertyIsEnumerable('fileName'));
 console.log(e.propertyIsEnumerable('lineNumber'));
 console.log(e.propertyIsEnumerable('columnNumber'));
 
-for (let prop in e) {
-    console.log(`${prop}: ${e[prop]}`);
-}
-
 ...
 
 > false
@@ -85,12 +81,17 @@ for (let prop in e) {
 > false
 > false
 > false
+
+for (let prop in e) {
+    console.log(`${prop}: ${e[prop]}`);
+}
+
+...
+
 > undefined
 ```
 
-Consider the code above. What I am displaying here is that properties of Errors must be accessed directly. This is important because it can be very confusing when trying to handle errors.
-
-Let's say we I would like to, in development only, send the error to the client to speed up my debugging process. I might write something like this:
+Consider the code above. What I am displaying here is that properties of Errors must be accessed directly. This is important because it can be very confusing when trying to handle errors. For example, let's say I would like to, in development only, send the error to the client to speed up my debugging process. I might write something like this:
 
 ```js
 // error handler
@@ -118,10 +119,11 @@ The resulting response?
 
 ```js
 console.log(res.body.data.error);
+
 > {}
 ```
 
-This is not because the error is actually an empty object, but because the `Error` class in javascript is not [enumerable](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Enumerability_and_ownership_of_properties), therefore the keys and values do not get translated into JSON. When translating the response data into JSON, Express is actually turning it first into a string and then into byte data to be be sent via HTTP. What makes it a json response is the Content header which is set to `application/json`. Examine the following code:
+This is not because the error is actually an empty object, but because the `Error` class in javascript is not [enumerable](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Enumerability_and_ownership_of_properties), therefore the keys and values do not get translated into JSON. When translating the response data into JSON, Express is actually turning it first into a string and then into byte data to be be sent via HTTP. What makes it a JSON response is the `Content-Type` header, which is set to `application/json`, telling the consuming application what the payload should be interpreted as. Examine the following code:
 
 ```js
 const x = {
@@ -155,13 +157,30 @@ This demonstrates that when an Error is stringified, it loses its keys and value
 1. Unhandled errors will be automatically sent through the error handling middleware by Express.
 
 
-#### Checkout the example tests
+**Why should all errors pass through the middleware before reaching the consumer?**
 
-### conclusions
-  - run time errors don't log themselves
-  - handle all errors that will be reported to the client in the middleware
-  - if you have access to the route's `next` function, call `next(error)`
-  - otherwise, `throw` the error
-  - return next in routes, otherwise the rest of the route logic will execute
+By centralizing all reporting logic and configuration in one place, I can be sure that no sensitive data is leaked, error data is uniformly formatted, and any logging strategies are executed consistently.
+
+**What does `next` do?**
+
+The Express router's `next` function pass the control flow of the request on to the _next_ middleware handler. When using Express router, the error handler middleware should always be defined as the last piece of middleware in the application ensuring that any properly handled, or unhandled error will pass through it.
+
+**Checkout the example tests**
+
+I have written several example routes and tests to demonstrate how errors should be handled in different situations.
+
+To run the tests, clone the repository and execute to following commands:
+
+```
+$ npm i
+$ npm run test
+```
+
+### Conclusions
+  - Runtime errors do not log themselves
+  - Handle all errors that will be reported to the API consumer in the middleware
+  - If you have access to the route's `next` function, call `next(error)`
+  - Otherwise, `throw` the error
+  - Return `next` in routes when handling an error, otherwise the remaining logic below the `next` call will execute
 
 
