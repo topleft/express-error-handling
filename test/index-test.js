@@ -23,12 +23,15 @@ describe('error tests', () => {
     done();
   });
 
-  it('responds with the error as empty object in the body', (done) => {
+  it('responds with the error with only two key, name and message', (done) => {
 
     chai.request(app).get('/error')
     .then((res) => {
       res.status.should.equal(500);
-      Object.keys(res.body.error.error).length.should.equal(0);
+      res.body.error.should.have.property('name');
+      res.body.error.should.have.property('message');
+      Object.keys(res.body).should.have.length(1);
+      Object.keys(res.body.error).should.have.length(2);
       done();
     })
     .catch(done);
@@ -36,12 +39,26 @@ describe('error tests', () => {
 
   it('logs the error to the console (when NODE_ENV !== test)', (done) => {
     app.set('env', 'not_test');
-    const consoleSpy = sinon.spy(console, 'log');
+    const consoleSpy = sandbox.spy(console, 'log');
 
+    consoleSpy.calledOnce.should.be.false;
     chai.request(app).get('/error')
     .then((res) => {
       res.status.should.equal(500);
       consoleSpy.calledOnce.should.be.true;
+      done();
+    })
+    .catch(done);
+  });
+
+  it('does not log the error to the console (when NODE_ENV === test)', (done) => {
+    const consoleSpy = sandbox.spy(console, 'log');
+
+    consoleSpy.calledOnce.should.be.false;
+    chai.request(app).get('/error')
+    .then((res) => {
+      res.status.should.equal(500);
+      consoleSpy.calledOnce.should.be.false;
       done();
     })
     .catch(done);

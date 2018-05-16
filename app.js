@@ -36,7 +36,7 @@ app.use(function(err, req, res, next) {
   res.json({
     error: {
       message: err.message,
-      error: err
+      name: err.name
     }
   });
 });

@@ -1,6 +1,6 @@
 ### Node/Express Error Handling
 
-Proper error handling in web applications is essential to security, maintenance, user experience, developer experience, and even performance. In other words, error handling touches every part of your application. I am going to examine a very basic view of error handling in a Node/Express JSON API.
+Proper error handling in web applications is essential to security, maintenance, user experience, developer experience, and even performance. In other words, error handling touches every aspect of an application. I am going to examine a very basic view of error handling in a Node/Express JSON API.
 
 First I will examine the out of the box error handler that ships with Express Generator. The Express way to handle errors is through something called middleware. This article in the Express docs, [Using Middleware](https://expressjs.com/en/guide/using-middleware.html).
 
@@ -165,9 +165,9 @@ By centralizing all reporting logic and configuration in one place, I can be sur
 
 The Express router's `next` function pass the control flow of the request on to the _next_ middleware handler. When using Express router, the error handler middleware should always be defined as the last piece of middleware in the application ensuring that any properly handled, or unhandled error will pass through it.
 
-**Checkout the example tests**
+**Example Tests**
 
-I have written several example routes and tests to demonstrate how errors should be handled in different situations in this [sample Express application](https://github.com/topleft/express-error-handling).
+I have written several example routes, helpers and tests to demonstrate how errors should be handled in different situations in this [sample Express application](https://github.com/topleft/express-error-handling).
 
 To run the tests, clone the repository and execute to following commands:
 
