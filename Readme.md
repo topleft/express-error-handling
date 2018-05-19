@@ -2,14 +2,18 @@
 
 Proper error handling in web applications is essential to security, maintenance, user experience, developer experience, and even performance. In other words, error handling touches every aspect of an application. I am going to examine a very basic view of error handling in a Node/Express JSON API.
 
-First I will examine the out of the box error handler that ships with Express Generator. The Express way to handle errors is through something called middleware. This article in the Express docs, [Using Middleware](https://expressjs.com/en/guide/using-middleware.html).
+First I will examine the _out of the box_ error handler that ships with [Express Generator](https://expressjs.com/en/starter/generator.html). The Express way of handling errors is through something called **middleware**. This article in the Express docs, [Using Middleware](https://expressjs.com/en/guide/using-middleware.html), explain the concept of middleware and hot it is employed in Express applications.
 
 ### Questions
+
+When creating an application recently, I had the following question about how this a JSON API built with Express should deal with errors:
 
 1. What is the best way to bubble errors up to the client?
 1. What role does `next()` play in the handling of errors?
 1. Should I always rely on middleware to bubble up my errors or should I explicitly `res.send` errors?
 1. How can I be sure that errors will log properly by creating a useful stack trace, while not exposing anything to the client?
+
+I will attempt to answers these questions as well as several others that came up while researching the topic.
 
 # Giving Errors a Place to Go
 
@@ -28,7 +32,7 @@ app.use(function(err, req, res, next) {
 });
 ```
 
-This middleware function assumes that a template engine will be used, which makes sense as Jade ships with the express generator. But I would like to create a JSON API, so this function needs updating to work for my purposes.
+This middleware function assumes that a template engine will be used, which makes sense as [Jade (Pug)](https://github.com/pugjs/pug) ships with the express generator. But I would like to create a JSON API, so this function needs updating to work for my purposes.
 
 ```js
 // error handler
@@ -61,7 +65,7 @@ Runtime errors do not expose themselves. Unless we log this error, the only evid
 
 These two pieces of information, along with the HTTP status code, create a meaningful response for the consumer of this API, wether that is my own frontend or another developer's program. What I do not want to send back is the stacktrace. This would leak out private, potentially sensitive, information about my application to the public, possibly exposing vulnerabilities.
 
-> IMPORTANT: Do not send the error stacktrace to the consumer of the application. You log them on your server console, send them toe a log file, save them in a data base, but do not send then to the client.
+> IMPORTANT: Do not send the error stacktrace to the consumer of the application. Loggin them on the server console, writing them to a log file, saving them in a data base are all fine, but they should not be exposed to the client.
 
 **The Error Class is Not Enumerable**
 
@@ -177,10 +181,10 @@ $ npm run test
 ```
 
 ### Conclusions
-  - Runtime errors do not log themselves
+  - Runtime errors do not log themselves, an application must explicitly log errors in order to have access to error details
   - Handle all errors that will be reported to the API consumer in the middleware
   - If you have access to the route's `next` function, call `next(error)`
   - Otherwise, `throw` the error
-  - Return `next` in routes when handling an error, otherwise the remaining logic below the `next` call will execute
+  - Return `next` calls in routes when handling an error, otherwise the remaining logic below the `next` call will execute
 
 
