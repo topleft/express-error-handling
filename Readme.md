@@ -197,7 +197,12 @@ The Express router's `next` function pass the control flow of the request on to 
 
 **Example Tests**
 
-I have written several example routes, helpers and tests to demonstrate how errors should be handled in different situations in this [sample Express application](https://github.com/topleft/express-error-handling).
+I have written several example routes, helpers and tests to demonstrate how errors should be handled in different situations in this sample Express application:
+
+- [/routes/index.js](https://github.com/topleft/express-error-handling/blob/master/routes/index.js)
+- [/helpers/index.js](https://github.com/topleft/express-error-handling/helpers/index.js)
+- [/app.js](https://github.com/topleft/express-error-handling/app.js)
+- [/test/index-test.js](https://github.com/topleft/express-error-handling/test/index-test.js)
 
 To run the tests, clone the repository and execute to following commands:
 
