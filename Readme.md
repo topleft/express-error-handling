@@ -197,7 +197,7 @@ The Express router's `next` function pass the control flow of the request on to 
 
 **Example Tests**
 
-I have written several example routes, helpers and tests to demonstrate how errors should be handled in different situations in this sample Express application:
+I find that one of the best ways to learn is by writing tests and reading code. Most of the value of this post is in a test suite I wrote to identify error handling best practices with common Javascript function patterns. Included are several example routes, helpers and tests to demonstrate how errors should be handled in different situations in this sample Express application:
 
 - [/routes/index.js](https://github.com/topleft/express-error-handling/blob/master/routes/index.js)
 - [/helpers/index.js](https://github.com/topleft/express-error-handling/helpers/index.js)
@@ -218,7 +218,7 @@ $ npm run test
   - Otherwise, `throw` the error
   - Return `next` calls in routes when handling an error, otherwise the remaining logic below the `next` call will execute
 
-Errors are a powerful tool to be utilized by the developers to make programming easier, provide a better experience for the consumer and ensure that an application is protected. By following a consistent pattern, utilizing the frameworks strengths and understanding some basic about the JS Error Class, error handling in Express applications can be simple and helpful.
+The Errors is a powerful tool to be utilized by developers to make programming easier, provide a better experience for the consumer and ensure that an application is protected. By following a consistent pattern, utilizing the framework's strengths and understanding some basics about the JS Error Class, error handling in Express applications can be simple and helpful.
 
 Thanks for reading.
 
