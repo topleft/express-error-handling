@@ -1,6 +1,6 @@
-# Node/Express Error Handling
+# Don't Fly Blind: Node/Express Error Handling
 
-Proper error handling in web applications is essential to security, maintenance, user experience, and developer experience. In other words, error handling touches almost every aspect of an application. Errors are to be expected in an application, and they do not always mean that something has gone wrong. More often than not, in production, errors represent expected pathways in an application that require notification to the consumer, such as a BadRequest (400) or an Unauthorized (401)request. I am going to examine a very fundamental approach to error handling in a Node/Express JSON API that will accomplish basic yet sound functionality.
+A fundamental concept that every fullstack Javascript developer must know; server side error handling. Proper error handling in web applications is essential to tight security, effective maintenance, as well as positive user and developer experiences. In other words, error handling touches almost every aspect of an application. Errors are to be expected in an application, and they do not always mean that something has gone wrong. More often than not, in production, errors represent expected pathways in an application that require notification to the consumer, such as a Bad (400) or Unauthorized (401) request. I am going to examine a very fundamental approach to error handling in a Node/Express JSON API that will accomplish basic, yet sound functionality.
 
 ### What are errors for?
 
@@ -8,19 +8,19 @@ This question is a little meta, but unless I know what I am trying to accomplish
 
 1. Abort execution of unexpected/undesired pathways
 1. Allow for graceful transitions from implementations that do not work to ones that do
-1. Notify the consumer, human or computer, that the program did not work as expected and/or desired. Ideally with enough information that will allow them decide how to proceed
-1. Provide information to developers about flaws/bugs in the code
+1. Notify the consumer, human or computer, that the program did not work as expected and/or desired (ideally, with enough information to allow them to decide how to proceed)
+1. Provide useful information to developers about flaws/bugs in the code
 
 ### Express Specific Questions
 
-While the objective of errors in programming will remain fairly consistent between languages and frameworks, the details of implementation will certainly not. When creating a Node/Express application recently, I had the following questions about how this a JSON API should handle errors:
+While the objective of errors in programming will remain fairly consistent between languages and frameworks, the details of implementation will certainly not. When creating a Node/Express application recently, I had the following questions about how a JSON API should handle errors:
 
 1. What is the best way to bubble errors up to the client?
 1. What role does `next()` play in the handling of errors?
 1. Should I always rely on middleware to bubble up my errors or should I explicitly `res.send` errors?
 1. How can I be sure that errors will log properly by creating a useful stack trace, while not exposing anything to the client?
 
-I will answer these questions as well as several others that came up while researching the topic.
+I will answer these questions, as well as several others that came up while researching the topic.
 
 #### Guidelines
 
