@@ -218,7 +218,7 @@ $ npm run test
   - Otherwise, `throw` the error
   - Return `next` calls in routes when handling an error, otherwise the remaining logic below the `next` call will execute
 
-The Errors is a powerful tool to be utilized by developers to make programming easier, provide a better experience for the consumer and ensure that an application is protected. By following a consistent pattern, utilizing the framework's strengths and understanding some basics about the JS Error Class, error handling in Express applications can be simple and helpful.
+The Error is a powerful tool to be utilized by developers to make programming easier, provide a better experience for the consumer and ensure that an application is protected. By following a consistent pattern, utilizing the framework's strengths and understanding some basics about the JS Error Class, error handling in Express applications can be simple and helpful.
 
 Thanks for reading.
 
